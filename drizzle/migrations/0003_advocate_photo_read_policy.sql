@@ -1,0 +1,1 @@
+CREATE POLICY "Directory managers read advocate photos" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'advocate-photos' AND public.can_manage_directory(auth.uid()));

@@ -1,0 +1,12 @@
+CREATE OR REPLACE FUNCTION public.booking_advocate_options(_location uuid,_service uuid,_month date,_date date,_start timestamptz,_zone text,_hold_token text DEFAULT NULL)
+RETURNS TABLE(advocate_id uuid,slot_count integer,first_slot timestamptz) LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public,extensions AS $$
+ WITH days AS (SELECT d::date AS day FROM generate_series(COALESCE(_date,date_trunc('month',_month::timestamp)::date)::timestamp,COALESCE(_date,(date_trunc('month',_month::timestamp)+interval '1 month - 1 day')::date)::timestamp,interval '1 day') d), candidates AS (SELECT a.id FROM advocates a JOIN advocate_locations al ON al.advocate_id=a.id WHERE al.location_id=_location AND a.active AND NOT a.is_deleted AND a.deleted_at IS NULL), slots AS (
+ SELECT c.id,sl.starts_at FROM candidates c CROSS JOIN days CROSS JOIN LATERAL public.booking_day_slots(_location,_service,c.id,days.day,_zone) sl WHERE _start IS NULL OR sl.starts_at=_start
+ UNION SELECT h.advocate_id,h.starts_at FROM booking_holds h JOIN candidates c ON c.id=h.advocate_id JOIN locations l ON l.id=h.location_id AND l.active AND NOT l.is_deleted JOIN services sv ON sv.id=h.service_id AND sv.active CROSS JOIN booking_settings bs WHERE bs.id=1 AND bs.accept_online_bookings AND h.token_hash=encode(digest(coalesce(_hold_token,''),'sha256'),'hex') AND h.expires_at>now() AND h.location_id=_location AND h.service_id=_service AND h.starts_at>=now()+make_interval(hours=>bs.min_notice_hours) AND h.starts_at<now()+make_interval(days=>bs.max_advance_days+1) AND h.ends_at=h.starts_at+make_interval(mins=>sv.duration_minutes) AND (_date IS NULL OR (h.starts_at AT TIME ZONE _zone)::date=_date) AND (_start IS NULL OR h.starts_at=_start)
+ -- slot_problem checks directory, hours, leave, holidays, blocks and appointments before holds.
+ -- Accept only the visitor's still-valid capacity hold, never a newly blocked advocate.
+ AND public.slot_problem(h.advocate_id,h.location_id,h.starts_at,h.ends_at)='That time is temporarily held. Please choose another time.'
+ ) SELECT slots.id,count(*)::integer,min(slots.starts_at) FROM slots GROUP BY slots.id ORDER BY slots.id;
+$$;
+REVOKE ALL ON FUNCTION public.booking_advocate_options(uuid,uuid,date,date,timestamptz,text,text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.booking_advocate_options(uuid,uuid,date,date,timestamptz,text,text) TO anon,authenticated,service_role;

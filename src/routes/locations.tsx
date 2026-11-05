@@ -1,0 +1,7 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { PublicPage } from "@/components/layout/PublicPage";
+import { Button } from "@/components/ui/button";
+import { Building2, Video, ArrowRight } from "lucide-react";
+import { pageHead, publicLocations } from "@/lib/public-content";
+export const Route = createFileRoute("/locations")({ head: () => pageHead("Our Locations", "Explore Apex Legal Partners consultation offices and virtual consultations."), component: Page });
+function Page() { return <PublicPage eyebrow="Meet at your convenience" title="Locations" description="Choose an office consultation or meet online. All appointment times will be shown in the selected location’s time zone."><p className="mb-5 text-xs text-muted-foreground">Sample locations · Addresses must be verified before booking opens.</p><div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{publicLocations.map(l => <article key={l.id} className="rounded-lg border bg-card p-6">{l.type === "virtual" ? <Video className="mb-6 size-7 text-primary" /> : <Building2 className="mb-6 size-7 text-primary" />}<p className="mb-2 text-xs uppercase tracking-widest text-muted-foreground">{l.city}</p><h2 className="text-xl">{l.name}</h2><p className="mt-4 min-h-14 text-sm leading-relaxed text-muted-foreground">{l.address || "Online consultation. There is no physical office address."}</p><Button asChild variant="outline" className="mt-6 h-11"><Link to="/">Book Appointment <ArrowRight /></Link></Button></article>)}</div></PublicPage>; }

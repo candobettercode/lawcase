@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791429436953,
+      "tag": "0000_migration",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791773199963,
+      "tag": "0001_monthly_booking_availability_and_holds",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791946091996,
+      "tag": "0002_admin_directory_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792032496530,
+      "tag": "0003_advocate_photo_read_policy",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792378755685,
+      "tag": "0004_admin_optional_password_change",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792774074847,
+      "tag": "0005_two_step_consultation_booking",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792983903380,
+      "tag": "0006_revalidate_held_advocate_options",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793507401672,
+      "tag": "0007_admin_appointment_contact_details",
+      "breakpoints": true
+    }
+  ]
+}

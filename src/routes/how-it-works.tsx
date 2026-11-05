@@ -1,0 +1,9 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { PublicPage } from "@/components/layout/PublicPage";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { pageHead } from "@/lib/public-content";
+export const Route = createFileRoute("/how-it-works")({ head: () => pageHead("How Booking Works", "Learn how to request a legal consultation, select an advocate and receive firm confirmation."), component: Page });
+function Page() { return <PublicPage eyebrow="Your first consultation" title="How It Works" description="Choose your consultation preferences. The firm reviews each request before confirming an appointment.">
+<ol className="grid gap-8 md:grid-cols-3">{[{ title: "Choose your appointment", body: "Choose Online, In-person or Phone and an available date and time. Select an advocate, or let the firm assign an available advocate." }, { title: "Your details", body: "Provide your name and mobile number, with an optional email address. Check the consultation fee and submit your request." }, { title: "Await firm confirmation", body: "Keep your appointment reference and private details link. The team reviews your request and updates your appointment status." }].map((s,i) => <li key={s.title} className="border-t pt-6"><p className="mb-4 font-serif text-3xl text-muted-foreground">0{i+1}</p><h2 className="text-xl">{s.title}</h2><p className="mt-3 leading-relaxed text-muted-foreground">{s.body}</p></li>)}</ol>
+<div className="mt-10 border-t pt-7"><p className="mb-5 text-sm text-muted-foreground">Booking does not by itself create an attorney–client relationship. Avoid sending confidential documents before the firm confirms representation.</p><Button asChild className="h-12"><Link to="/">Book Appointment <ArrowRight /></Link></Button></div></PublicPage>; }
